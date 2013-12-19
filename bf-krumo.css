@@ -1,0 +1,25 @@
+/*= K R U M O   O V E R R I D E S
+------------------------------------------------------------------------------*/
+/* Since Krumo is appearing within the content container, the content ul and li
+settings are overriding the default styling. This overrides the overrides,
+making Krumo useful again */
+
+ul.krumo-node,
+ul.krumo-node ul {
+	margin: 0 0 0 10px !important;
+	padding: 0 !important;
+}
+ul.krumo-node,
+li.krumo-child {
+	margin: 0 !important;
+}
+li.krumo-child li.krumo-child {
+	margin-left: 10px !important;
+}
+li.krumo-footnote {
+	margin: 10px 0 !important;
+}
+span.krumo-call,
+div.krumo-element {
+	color: #333;
+}
