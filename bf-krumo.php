@@ -17,11 +17,11 @@
  * functionality by calling the krumo() function.
  */
 class BF_Krumo {
-	// Instance of BF_Krumo
+	// Instance of plugin class
 	private static $instance = false;
 
 	// Plugin path and url settings
-	protected $plugin_path;
+	protected $plugin_dir;
 	protected $plugin_url;
 
 	/**
@@ -42,29 +42,62 @@ class BF_Krumo {
 	 */
 	public function __construct()
 	{
-		// Set Plugin Path
-		$this->plugin_path = dirname(__FILE__);
+		// The filesystem directory path (with trailing slash) for the plugin
+		$this->plugin_dir = plugin_dir_path( __FILE__ );
 
-		// Set Plugin URL
-		$this->plugin_url = WP_PLUGIN_URL . '/bf-krumo';
+		// The URL (with trailing slash) for the plugin
+		$this->plugin_url = plugin_dir_url( __FILE__ );
 
 		// Include the Krumo library
-		add_action( 'init', array( $this, 'bf_krumo_init' ) );
+		add_action( 'init', array( $this, 'init' ) );
 
 		// Add the Krumo override .css to both front and backend pages
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
+
+
 	/**
-	 * init() action callback
+	 * register_activation_hook() callback function
 	 *
-	 * Includes the Krumo library.
+	 * Adds the path to the Krumo directory to the krumo.ini file. This only
+	 * needs to be done one time, and this seemed the best way to do it.
+	 */ 
+	public function install()
+	{
+		// Build the krumo.ini url configuration string
+		$url = $this->plugin_url . 'krumo_0.2.1a/';
+		$rep = 'url = "' . $url . '"' . "\n";
+		
+		// Open the file
+		$fid = $this->plugin_dir . 'krumo_0.2.1a/krumo.ini';
+		$ini = file( $file );
+
+		// Loop through each line and replace the URL where appropriate
+		$result = '';
+		foreach( $ini as $line )
+		{
+			$result .= substr( $line, 0, 3 ) == 'url' ) ? $rep : $line;
+		}
+
+		// Save the changes to the configuration file
+		file_put_contents( $fid, $result );
+	}
+
+
+
+	/**
+	 * add_action( 'init' ) callback function
+	 *
+	 * Includes the Krumo library on every page load.
 	 */
-	public function bf_krumo_init()
+	public function init()
 	{
 		require_once( $this->plugin_path . '/krumo_0.2.1a/class.krumo.php' );
 	}
+
+
 
 	/**
 	 * wp_enqueue_scripts() action callback
@@ -84,5 +117,8 @@ class BF_Krumo {
 	}
 }
 
-// Instantiate the BF_Krumo class.
+// Instantiate the plugin.
 $bf_krumo = BF_Krumo::get_instance();
+
+// Activation hook to setup the krumo.ini file
+register_activation_hook( __FILE__, array( 'BF_Krumo', 'install' ) );
