@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Bullfrog Krumo
  * Plugin URI:        http://www.bullfroglabs.net
- * Description:       Implements the Krumo PHP5 debugging tool
- * Version:           1.0.2
+ * Description:       Implements the Krumo var_dump replacement function
+ * Version:           1.0.3
  * Author:            Jeremiah Lutz
  * Author URI:        http://www.integritive.com
  * License:           GPL-2.0+
@@ -63,22 +63,25 @@ class BF_Krumo {
 	 *
 	 * Adds the path to the Krumo directory to the krumo.ini file. This only
 	 * needs to be done one time, and this seemed the best way to do it.
+	 *
+	 * TODO: Find out why this function isn't being called in the "Object"
+	 * context so we can use plugin_url and plugin_dir.
 	 */ 
 	public function install()
 	{
 		// Build the krumo.ini url configuration string
-		$url = $this->plugin_url . 'krumo_0.2.1a/';
+		$url = plugin_dir_url( __FILE__ ) . 'krumo_0.2.1a/';
 		$rep = 'url = "' . $url . '"' . "\n";
-		
+
 		// Open the file
-		$fid = $this->plugin_dir . 'krumo_0.2.1a/krumo.ini';
-		$ini = file( $file );
+		$fid = plugin_dir_path( __FILE__ ) . 'krumo_0.2.1a/krumo.ini';
+		$ini = file( $fid );
 
 		// Loop through each line and replace the URL where appropriate
 		$result = '';
 		foreach( $ini as $line )
 		{
-			$result .= substr( $line, 0, 3 ) == 'url' ) ? $rep : $line;
+			$result .= substr( $line, 0, 3 ) == 'url' ? $rep : $line;
 		}
 
 		// Save the changes to the configuration file
