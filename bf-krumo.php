@@ -3,7 +3,7 @@
  * Plugin Name:       Bullfrog Krumo
  * Plugin URI:        http://www.bullfroglabs.net
  * Description:       Implements the Krumo var_dump replacement function
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            Jeremiah Lutz
  * Author URI:        http://www.integritive.com
  * License:           GPL-2.0+
@@ -97,7 +97,7 @@ class BF_Krumo {
 	 */
 	public function init()
 	{
-		require_once( $this->plugin_path . '/krumo_0.2.1a/class.krumo.php' );
+		require_once( $this->plugin_dir . '/krumo_0.2.1a/class.krumo.php' );
 	}
 
 
